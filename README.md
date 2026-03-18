@@ -1,4 +1,4 @@
-# 📚 Paper Hunter (DBLP Paper Finder)
+# 📚 Paper Hunter
 
 <img src="assets/teaser.png" alt="Paper Hunter App Screenshot" width="800">
 
