@@ -1,5 +1,7 @@
 # 📚 Paper Hunter (DBLP Paper Finder)
 
+<img src="assets/teaser.png" alt="Paper Hunter App Screenshot" width="800">
+
 Paper Hunter is a fast, interactive web application built with Streamlit that allows researchers to directly scrape, filter, and discover academic papers from the DBLP computer science bibliography. 
 
 Instead of manually browsing through massive conference proceedings, you can build a search queue of specific venues and years, apply boolean keyword filters (AND/OR), and extract direct links to the papers you need.

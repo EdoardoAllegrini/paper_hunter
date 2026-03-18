@@ -176,7 +176,8 @@ if search_button:
                 df, 
                 column_config={"URL": st.column_config.LinkColumn("Paper Link")},
                 hide_index=True,
-                width="stretch"
+                width="stretch",
+                height=600
             )
         elif all_papers:
             st.info("Papers were extracted, but none matched your keywords.")
