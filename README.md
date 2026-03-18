@@ -27,7 +27,7 @@ Instead of manually browsing through massive conference proceedings, you can bui
 
 1. **Clone the repository:**
 ```bash
-git clone [https://github.com/EdoardoAllegrini/paper_hunter.git](https://github.com/EdoardoAllegrini/paper_hunter.git)
+git clone https://github.com/EdoardoAllegrini/paper_hunter.git
 cd paper_hunter
 ```
 
@@ -58,7 +58,7 @@ The application will open automatically in your default web browser at http://lo
 - `venues.json`: Local JSON database storing your saved conference venues and their respective DBLP acronyms.
 
 ### 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [https://github.com/EdoardoAllegrini/paper_hunter/issues](issues) page.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues](https://github.com/EdoardoAllegrini/paper_hunter/issues) page.
 
 ### 📝 License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
