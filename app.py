@@ -21,6 +21,11 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# --- State Management ---
+# Initialize a session state to hold the specific venue+year targets for the current search
+if "search_queue" not in st.session_state:
+    st.session_state.search_queue = []
+
 # --- Venue Management Functions ---
 VENUES_FILE = "venues.json"
 
@@ -52,7 +57,7 @@ def search_papers(papers, keywords_str, operator):
             results.append(paper)
     return results
 
-# Load existing venues into memory
+# Load base venues into memory
 VENUES = load_venues()
 
 # --- UI Layout ---
@@ -60,79 +65,102 @@ st.title("📚 DBLP Security & Privacy Paper Finder")
 
 # Sidebar Controls
 with st.sidebar:
-    st.header("Search Parameters")
+    st.header("1. Build Search Queue")
     
-    selected_venues = st.multiselect(
-        "Select Venues:",
-        options=list(VENUES.keys())
-    )
-    
-    # New global year input for the search
-    target_year = st.text_input("Target Year:", value="2024", placeholder="e.g., 2024")
-    
+    if not VENUES:
+        st.warning("No venues found. Please add a venue below first.")
+    else:
+        # Inputs to build a specific search target
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            selected_base = st.selectbox("Select Venue", options=list(VENUES.keys()))
+        with col2:
+            target_year = st.text_input("Year", value="2024")
+            
+        if st.button("➕ Add to Queue", width="stretch"):
+            if selected_base and target_year:
+                target = {
+                    "name": selected_base,
+                    "acronym": VENUES[selected_base],
+                    "year": target_year.strip()
+                }
+                # Prevent duplicates in the queue
+                if target not in st.session_state.search_queue:
+                    st.session_state.search_queue.append(target)
+                    st.success(f"Added {selected_base} {target_year}")
+                else:
+                    st.info("Already in queue.")
+
+    # Display the current queue
+    if st.session_state.search_queue:
+        st.markdown("**Current Search Targets:**")
+        for i, target in enumerate(st.session_state.search_queue):
+            st.markdown(f"- {target['name']} {target['year']}")
+            
+        if st.button("🗑️ Clear Queue"):
+            st.session_state.search_queue = []
+            st.rerun()
+
+    st.divider()
+
+    st.header("2. Keywords & Execute")
     keywords_input = st.text_input("Keywords (comma separated):", placeholder="fuzzing, LLM")
     operator = st.radio("Search Logic:", ["AND", "OR"])
     
-    st.divider()
-    search_button = st.button("🔍 Execute Search", type="primary", use_container_width=True)
+    search_button = st.button("🔍 Execute Search", type="primary", width="stretch")
     
     st.divider()
     
-    # --- Add New Venue UI ---
-    with st.expander("➕ Add New Venue"):
+    # --- Manage Database Expanders ---
+    with st.expander("⚙️ Manage Venue Database"):
+        st.markdown("**Add New Venue**")
         new_name = st.text_input("Venue Name", placeholder="e.g., USENIX Security")
         new_acronym = st.text_input("DBLP Acronym", placeholder="e.g., uss")
-        # Year input removed from here!
         
-        if st.button("Save Venue", use_container_width=True):
+        if st.button("Save to Database", width="stretch"):
             if new_name and new_acronym:
-                name_clean = new_name.strip()
-                acr_clean = new_acronym.strip().lower()
-                
-                # Store just the name and acronym mapping
-                VENUES[name_clean] = acr_clean
+                VENUES[new_name.strip()] = new_acronym.strip().lower()
                 save_venues(VENUES)
-                
-                st.success(f"Added {name_clean}!")
+                st.success(f"Added {new_name.strip()}!")
                 st.rerun() 
             else:
                 st.error("Please provide both name and acronym.")
                 
-    # --- Delete Venue UI ---
-    with st.expander("🗑️ Delete Saved Venue"):
-        if not VENUES:
-            st.info("No venues saved yet.")
-        else:
-            venue_to_delete = st.selectbox(
-                "Select venue to remove:", 
-                options=list(VENUES.keys())
-            )
-            
-            if st.button("Delete Venue", use_container_width=True):
+        st.markdown("---")
+        st.markdown("**Delete Saved Venue**")
+        if VENUES:
+            venue_to_delete = st.selectbox("Select to remove:", options=list(VENUES.keys()), key="del_box")
+            if st.button("Delete from Database", width="stretch"):
                 if venue_to_delete in VENUES:
                     del VENUES[venue_to_delete]
                     save_venues(VENUES)
+                    
+                    # Also clean up the search queue if the deleted venue was in it
+                    st.session_state.search_queue = [t for t in st.session_state.search_queue if t["name"] != venue_to_delete]
+                    
                     st.success(f"Deleted {venue_to_delete}!")
                     st.rerun() 
 
 # Main Logic execution
 if search_button:
-    if not selected_venues:
-        st.warning("Please select at least one venue.")
-    elif not target_year.strip():
-        st.warning("Please specify a target year.")
+    if not st.session_state.search_queue:
+        st.warning("Your search queue is empty. Please add at least one venue and year from the sidebar.")
     else:
         with st.spinner('Fetching papers directly from DBLP...'):
             all_papers = []
-            yr = target_year.strip()
             
-            for venue in selected_venues:
-                acr = VENUES[venue]
-                # Dynamically construct the URL here
+            # Loop through the specific targets the user built
+            for target in st.session_state.search_queue:
+                acr = target["acronym"]
+                yr = target["year"]
+                name = target["name"]
+                
+                # Construct URL
                 url = f"https://dblp.org/db/conf/{acr}/{acr}{yr}.html"
+                display_name = f"{name} {yr}"
                 
                 # Fetch papers 
-                papers = fetch_dblp_papers(url=url, venue_name=f"{venue} {yr}")
+                papers = fetch_dblp_papers(url=url, venue_name=display_name)
                 if papers:
                     all_papers.extend(papers)
             
@@ -146,9 +174,9 @@ if search_button:
             df = pd.DataFrame(matched_papers)
             st.dataframe(
                 df, 
-                column_config={"URL": st.column_config.LinkColumn("Source Link")},
+                column_config={"URL": st.column_config.LinkColumn("Paper Link")},
                 hide_index=True,
-                use_container_width=True
+                width="stretch"
             )
         elif all_papers:
             st.info("Papers were extracted, but none matched your keywords.")

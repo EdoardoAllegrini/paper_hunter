@@ -1,2 +1,27 @@
+# Environments
 venv/
+env/
+.env
+
+# Python Cache
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit
+.streamlit/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+
+
+venues.json

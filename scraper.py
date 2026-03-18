@@ -20,28 +20,38 @@ def fetch_dblp_papers(url, venue_name):
         soup = BeautifulSoup(response.text, 'html.parser')
         papers = []
         
-        # DBLP wraps paper metadata in <cite class="data"> tags
-        entries = soup.find_all('cite', class_='data')
+        # CHANGED: We now iterate over the parent <li> tags so we can access both the text data and the navigation links
+        entries = soup.find_all('li', class_='entry')
         
         for entry in entries:
-            # 1. Extract Authors: DBLP uses <span itemprop="author">
-            author_spans = entry.find_all('span', itemprop='author')
+            # Find the cite tag which contains the text data
+            cite_data = entry.find('cite', class_='data')
+            if not cite_data:
+                continue
+
+            # 1. Extract Authors
+            author_spans = cite_data.find_all('span', itemprop='author')
             authors_list = [author.get_text(strip=True) for author in author_spans]
             authors_str = ", ".join(authors_list)
             
-            # 2. Extract Title: DBLP uses <span class="title">
-            title_span = entry.find('span', class_='title')
+            # 2. Extract Title
+            title_span = cite_data.find('span', class_='title')
             title_str = title_span.get_text(strip=True) if title_span else "Unknown Title"
             
             # Skip empty or "front matter" entries (like conference preface)
             if not authors_str or title_str == "Unknown Title":
                 continue
+            
+            # 3. Extract the specific paper URL (NEW)
+            link_tag = entry.select_one('nav.publ div.head a')
+            # If a specific link is found, use it; otherwise fallback to the general conference url
+            paper_url = link_tag['href'] if link_tag else url 
                 
             papers.append({
                 "Venue": venue_name,
                 "Title": title_str,
                 "Authors": authors_str,
-                "URL": url
+                "URL": paper_url  # Changed from the base 'url' variable
             })
             
         return papers
