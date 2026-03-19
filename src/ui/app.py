@@ -165,7 +165,6 @@ if search_button:
                 all_papers.extend(papers)
 
             # Convert Paper objects to dicts for searching
-            papers_dicts = [p.to_dict() for p in all_papers]
             matched = search_papers(all_papers, keywords_input, operator)
             matched_dicts = [p.to_dict() for p in matched]
 

@@ -50,7 +50,7 @@ paper_hunter/
 
 1. Clone the repository:
    ```bash
-   git clone git@github.com:EdoardoAllegrini/paper_hunter.git
+   git clone https://github.com/EdoardoAllegrini/paper_hunter.git
    cd paper_hunter
    ```
 

@@ -59,6 +59,6 @@ def fetch_dblp_papers(url: str, venue_name: str) -> list[Paper]:
 
         return papers
 
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         st.error(f"Error scraping {venue_name} at {url}: {e}")
         return []

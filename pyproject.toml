@@ -63,7 +63,7 @@ Repository = "https://github.com/EdoardoAllegrini/paper-hunter.git"
 Issues = "https://github.com/EdoardoAllegrini/paper-hunter/issues"
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["src"]
 
 [tool.black]
 line-length = 120
