@@ -70,6 +70,11 @@ paper_hunter/
       pip install -e ".[dev]"
       ```
 
+4. Initialize the local configuration:
+   ```bash
+   cp config/venues.example.json config/venues.json
+   ```
+
 ## Usage
 
 ### Running the Application
@@ -163,7 +168,14 @@ This ensures you don't commit code style or formatting offenses. You can always 
 
 ## Configuration
 
-Venues are stored in `config/venues.json`. The format is:
+The application uses `config/venues.json` to store your local database of venues. Because this file is modified by the application during runtime, it is excluded from version control.
+
+### For new installations, you must create this file by copying the provided template:
+```bash
+cp config/venues.example.json config/venues.json
+```
+
+The JSON format expects the Venue Full Name as the key and the DBLP acronym as the value:
 ```json
 {
     "Venue Full Name": "dblp_acronym",
