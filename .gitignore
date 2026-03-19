@@ -23,5 +23,5 @@ __pycache__/
 .vscode/
 *.swp
 
-
-venues.json
+notes.txt
+config/venues.json

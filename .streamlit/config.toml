@@ -3,7 +3,7 @@
 gatherUsageStats = false
 
 [server]
-# Binds the server strictly to localhost (127.0.0.1) 
+# Binds the server strictly to localhost (127.0.0.1)
 # instead of 0.0.0.0 (which exposes it to your local network)
 address = "localhost"
 # disable automatic browser opening
