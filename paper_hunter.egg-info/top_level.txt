@@ -1,5 +1,0 @@
-assets
-config
-src
-tests
-venv
