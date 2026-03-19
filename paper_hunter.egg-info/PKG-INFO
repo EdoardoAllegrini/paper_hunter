@@ -1,3 +1,48 @@
+Metadata-Version: 2.4
+Name: paper-hunter
+Version: 1.0.0
+Summary: DBLP Paper Discovery Tool - Find academic papers by venue, year, and keywords
+Author-email: Edoardo Allegrini <e@e.e>
+License: MIT
+Project-URL: Homepage, https://github.com/EdoardoAllegrini/paper-hunter
+Project-URL: Documentation, https://github.com/EdoardoAllegrini/paper-hunter#readme
+Project-URL: Repository, https://github.com/EdoardoAllegrini/paper-hunter.git
+Project-URL: Issues, https://github.com/EdoardoAllegrini/paper-hunter/issues
+Keywords: dblp,academic,papers,research,scraping
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: streamlit>=1.28.0
+Requires-Dist: pandas>=1.5.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: lxml>=4.9.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: flake8-bugbear; extra == "dev"
+Requires-Dist: flake8-simplify; extra == "dev"
+Requires-Dist: flake8-logging-format; extra == "dev"
+Requires-Dist: flake8-print; extra == "dev"
+Requires-Dist: flake8-copyright; extra == "dev"
+Dynamic: license-file
+
 # Paper Hunter - Paper Discovery Tool
 
 <img src="assets/teaser.png" alt="Paper Hunter App Screenshot" width="800">
@@ -30,8 +75,6 @@ paper_hunter/
 │   └── venues.json             # Venue database
 ├── assets/                       # Static assets
 ├── run.py                        # Application entry point
-├── .flake8                       # Flake8 linting configuration
-├── pyproject.toml                # Project metadata and tool config (Ruff, Black, isort)
 ├── requirements.txt              # Python dependencies
 ├── README.md                     # This file
 └── LICENSE                       # License file
@@ -60,15 +103,10 @@ paper_hunter/
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install the package:
-   - For standard use:
-      ```bash
-      pip install .
-      ```
-   - For development (includes tests, linters, and formatters):
-      ```bash
-      pip install -e ".[dev]"
-      ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Usage
 
@@ -93,55 +131,16 @@ streamlit run src/ui/app.py
 
 ## Development
 
-### Testing
-I use pytest for unit testing and coverage reporting.
+### Running Tests
 
 ```bash
-# Run all tests
-pytest
+pytest tests/
+```
 
-# Run tests with coverage report
+With coverage:
+```bash
 pytest --cov=src tests/
 ```
-
-### Pre-commit Hooks
-
-I use `pre-commit` so that it's trivial to run the same linters & configuration locally as in CI.
-
-**Run all linters manually:**
-```bash
-pre-commit run --hook-stage=manual --all-files
-```
-
-Output:
-```
-isort....................................................................Passed
-black....................................................................Passed
-ruff.....................................................................Passed
-flake8...................................................................Passed
-mypy.....................................................................Passed
-pytest (fast)............................................................Passed
-```
-
-**Run a single linter:**
-```bash
-pre-commit run --all-files --hook-stage=manual isort
-```
-
-Output:
-```
-isort....................................................................Passed
-```
-
-**Automatic Enforcement:**
-
-Configure pre-commit to run automatically before every commit or push:
-```bash
-pre-commit install --hook-type=pre-commit
-pre-commit install --hook-type=pre-push
-```
-
-This ensures you don't commit code style or formatting offenses. You can always temporarily skip the checks by using the `-n` or `--no-verify` git option.
 
 ### Code Structure
 

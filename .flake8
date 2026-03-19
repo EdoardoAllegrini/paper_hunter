@@ -1,0 +1,24 @@
+[flake8]
+max-line-length = 120
+
+extend-ignore =
+    # E203: whitespace before ':'  (black does this)
+    E203,
+    # F401: `foo` imported but unused  (prefer ruff)
+    F401,
+    # F811 Redefinition of unused `foo`  (prefer ruff)
+    F811,
+    # E501 line too long  (prefer black)
+    E501,
+    # E701 multiple statements on one line (colon)  (prefer black)
+    E701,
+    # B010 Do not call setattr with a constant attribute value
+    B010,
+    # G200 Logging statement uses exception in arguments
+    G200,
+    # SIM102 Use a single if-statement instead of nested if-statements
+    SIM102,
+    # SIM114 Use logical or and a single body
+    SIM114,
+    # SIM117 Use 'with Foo, Bar:' instead of multiple with statements
+    SIM117

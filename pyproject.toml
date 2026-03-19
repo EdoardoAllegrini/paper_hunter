@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paper-hunter"
+version = "1.0.0"
+description = "DBLP Paper Discovery Tool - Find academic papers by venue, year, and keywords"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Edoardo Allegrini", email = "e@e.e"}
+]
+keywords = ["dblp", "academic", "papers", "research", "scraping"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+dependencies = [
+    "streamlit>=1.28.0",
+    "pandas>=1.5.0",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing & Typing
+    "pre-commit",
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "mypy>=1.0.0",
+    # Formatting
+    "black>=23.0.0",
+    "isort",
+    # Linting
+    "ruff",
+    "flake8>=6.0.0",
+    "flake8-bugbear",
+    "flake8-simplify",
+    "flake8-logging-format",
+    "flake8-print",
+    "flake8-copyright",
+]
+
+[project.urls]
+Homepage = "https://github.com/EdoardoAllegrini/paper-hunter"
+Documentation = "https://github.com/EdoardoAllegrini/paper-hunter#readme"
+Repository = "https://github.com/EdoardoAllegrini/paper-hunter.git"
+Issues = "https://github.com/EdoardoAllegrini/paper-hunter/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.black]
+line-length = 120
+# Black automatically ignores standard exclusion directories like .git and .venv
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg",
+    ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache",
+    ".svn", ".tox", ".venv", "__pypackages__", "_build",
+    "buck-out", "build", "dist", "node_modules", "venv",
+    # protobuf generated files
+    "*_pb2.py",
+    "*_pb2.pyi"
+]
+
+[tool.ruff.lint]
+# Enable pycodestyle (E) and Pyflakes (F)
+select = ["E", "F", "G"]
+ignore = [
+    "E402", # module level import not at top of file
+    "E722", # do not use bare 'except'
+    "E501"  # line too long (handled by Black)
+]
+fixable = ["ALL"]
+unfixable = []
