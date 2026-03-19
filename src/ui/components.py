@@ -1,6 +1,6 @@
 import hashlib
 import re
-from typing import List
+from typing import Dict, List, Tuple
 
 import pandas as pd
 
@@ -8,42 +8,56 @@ import pandas as pd
 def render_html_table(df: pd.DataFrame) -> str:
     """
     Render a pandas DataFrame as a styled HTML table with dynamic,
-    hash-based venue colors.
-
-    Args:
-        df: DataFrame with columns: Venue, Title, Authors, URL
-
-    Returns:
-        HTML string of the styled table
+    hash-based venue colors. Guarantees unique colors for different venues.
     """
 
-    def get_deterministic_colors(text: str):
+    # State tracking: maps venue names to their assigned (bg, text) colors
+    venue_to_colors: Dict[str, Tuple[str, str]] = {}
+    used_bg_colors = set()
+
+    def get_deterministic_colors(text: str) -> Tuple[str, str]:
         """Generates highly distinct, consistent pastel colors from a string."""
         if not text or pd.isna(text):
             return "#f1f5f9", "#475569"  # Default slate gray for missing data
 
+        # If we already assigned a color to this exact venue, reuse it
+        if text in venue_to_colors:
+            return venue_to_colors[text]
+
         # 1. Create a consistent integer hash from the venue name
-        hash_int = int(hashlib.md5(text.encode("utf-8")).hexdigest(), 16)
+        base_hash_int = int(hashlib.md5(text.encode("utf-8")).hexdigest(), 16)
 
-        # 2. Discretize the hue to force distinct colors
-        # 12 buckets ensures colors are at least 30 degrees apart on the color wheel
-        num_hue_buckets = 12
-        hue = (hash_int % num_hue_buckets) * (360 // num_hue_buckets)
+        offset = 0
+        # Safe-guard loop: try up to 1000 times to find a unique color
+        while offset < 1000:
+            hash_int = base_hash_int + offset
 
-        # 3. Add minor variations to saturation to separate collisions
-        # (between 70% and 95% saturation)
-        sat = 70 + (hash_int % 26)
+            # 2. Discretize the hue to force distinct colors
+            num_hue_buckets = 12
+            hue = (hash_int % num_hue_buckets) * (360 // num_hue_buckets)
 
-        # 4. Use HSL to guarantee readability
-        # Background: soft pastel (lightness between 85% and 92%)
-        bg_lightness = 85 + (hash_int % 8)
-        # Text: dark high-contrast (lightness between 20% and 30%)
-        text_lightness = 20 + (hash_int % 11)
+            # 3. Add minor variations to saturation to separate collisions
+            sat = 70 + (hash_int % 26)
 
-        bg_color = f"hsl({hue}, {sat}%, {bg_lightness}%)"
-        text_color = f"hsl({hue}, {sat}%, {text_lightness}%)"
+            # 4. Use HSL to guarantee readability
+            bg_lightness = 85 + (hash_int % 8)
+            text_lightness = 20 + (hash_int % 11)
 
-        return bg_color, text_color
+            bg_color = f"hsl({hue}, {sat}%, {bg_lightness}%)"
+            text_color = f"hsl({hue}, {sat}%, {text_lightness}%)"
+
+            # Check for collisions with DIFFERENT venues
+            if bg_color not in used_bg_colors:
+                # We found a unique color! Save it to our state trackers.
+                venue_to_colors[text] = (bg_color, text_color)
+                used_bg_colors.add(bg_color)
+                return bg_color, text_color
+
+            # Collision occurred! Increment the offset to shift the hash and try again
+            offset += 1
+
+        # Fallback if the color space somehow runs out (highly unlikely)
+        return "#f1f5f9", "#475569"
 
     html = "<table class='custom-table'>"
     html += "<thead><tr>"
@@ -59,7 +73,7 @@ def render_html_table(df: pd.DataFrame) -> str:
         venue = str(row.get("Venue", "N/A"))
         url = row.get("URL", "#")
 
-        # Get our dynamically generated, consistent colors
+        # Get our dynamically generated, consistent, and unique colors
         bg_color, text_color = get_deterministic_colors(venue)
 
         html += "<tr>"
@@ -76,13 +90,6 @@ def render_html_table(df: pd.DataFrame) -> str:
 def highlight_keywords_html(text: str, keywords: List[str]) -> str:
     """
     Highlight keywords in text with HTML styling.
-
-    Args:
-        text: Text to highlight
-        keywords: List of keywords to highlight
-
-    Returns:
-        HTML string with highlighted keywords
     """
     if not text or pd.isna(text) or not keywords:
         return str(text) if text else ""

@@ -28,6 +28,7 @@ paper_hunter/
 │   └── test_venue_manager.py
 ├── config/                       # Configuration files
 │   └── venues.json             # Venue database
+│   └── presets.json             # Set of venues database
 ├── assets/                       # Static assets
 ├── run.py                        # Application entry point
 ├── .flake8                       # Flake8 linting configuration
@@ -73,6 +74,7 @@ paper_hunter/
 4. Initialize the local configuration:
    ```bash
    cp config/venues.example.json config/venues.json
+   cp config/presets.example.json config/presets.json
    ```
 
 ## Usage
@@ -168,11 +170,12 @@ This ensures you don't commit code style or formatting offenses. You can always 
 
 ## Configuration
 
-The application uses `config/venues.json` to store your local database of venues. Because this file is modified by the application during runtime, it is excluded from version control.
+The application uses `config/venues.json` (`config/presets.json`) to store your local database of venues (set of venues). Because these files are modified by the application during runtime, they are excluded from version control.
 
-### For new installations, you must create this file by copying the provided template:
+### For new installations, you must create these files by copying the provided template:
 ```bash
 cp config/venues.example.json config/venues.json
+cp config/presets.example.json config/presets.json
 ```
 
 The JSON format expects the Venue Full Name as the key and the DBLP acronym as the value:

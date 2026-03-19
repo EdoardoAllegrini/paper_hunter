@@ -1,3 +1,6 @@
 {
-    "usenix": "uss"
+    "Usenix": "uss",
+    "CCS": "ccs",
+    "S&P": "sp",
+    "NDSS": "ndss"
 }
