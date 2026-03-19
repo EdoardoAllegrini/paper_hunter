@@ -79,7 +79,9 @@ with st.sidebar:
             # Queue Actions (Clear & Save)
             col_clear, col_save = st.columns(2)
             with col_clear:
-                if st.button("", icon=":material/delete:", use_container_width=True, type="tertiary"):
+                if st.button(
+                    "", icon=":material/delete:", use_container_width=True, type="tertiary", help="Clear queue"
+                ):
                     st.session_state.search_queue = []
                     st.rerun()
             with col_save:
