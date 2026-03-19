@@ -19,12 +19,6 @@ def get_custom_css():
         margin: none !important;
         padding: none !important;
     }
-    div.stButton > button {
-        padding: 2px 10px !important; /* Reduces internal spacing */
-        height: 32px !important;      /* Forces a shorter button */
-        min-height: 32px !important;  /* Overrides Streamlit's minimums */
-        line-height: 1 !important;    /* Centers the '✕' vertically */
-    }
     /* ===== METRIC STYLING ===== */
     /* Targets the large numeric value */
     [data-testid="stMetricValue"] {

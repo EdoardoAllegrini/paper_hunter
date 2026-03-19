@@ -1,0 +1,44 @@
+{
+    "Sec Big 4": [
+        {
+            "name": "Usenix",
+            "acronym": "uss",
+            "year": "2024"
+        },
+        {
+            "name": "Usenix",
+            "acronym": "uss",
+            "year": "2025"
+        },
+        {
+            "name": "CCS",
+            "acronym": "ccs",
+            "year": "2025"
+        },
+        {
+            "name": "CCS",
+            "acronym": "ccs",
+            "year": "2024"
+        },
+        {
+            "name": "S&P",
+            "acronym": "sp",
+            "year": "2024"
+        },
+        {
+            "name": "S&P",
+            "acronym": "sp",
+            "year": "2025"
+        },
+        {
+            "name": "NDSS",
+            "acronym": "ndss",
+            "year": "2025"
+        },
+        {
+            "name": "NDSS",
+            "acronym": "ndss",
+            "year": "2024"
+        }
+    ]
+}
