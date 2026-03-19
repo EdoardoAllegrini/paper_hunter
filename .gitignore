@@ -24,3 +24,4 @@ __pycache__/
 *.swp
 
 notes.txt
+config/venues.json

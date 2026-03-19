@@ -18,21 +18,30 @@ def render_html_table(df: pd.DataFrame) -> str:
     """
 
     def get_deterministic_colors(text: str):
-        """Generates a consistent pastel background and dark text color from a string."""
+        """Generates highly distinct, consistent pastel colors from a string."""
         if not text or pd.isna(text):
             return "#f1f5f9", "#475569"  # Default slate gray for missing data
 
         # 1. Create a consistent integer hash from the venue name
         hash_int = int(hashlib.md5(text.encode("utf-8")).hexdigest(), 16)
 
-        # 2. Map the hash to a hue degree (0 to 360)
-        hue = hash_int % 360
+        # 2. Discretize the hue to force distinct colors
+        # 12 buckets ensures colors are at least 30 degrees apart on the color wheel
+        num_hue_buckets = 12
+        hue = (hash_int % num_hue_buckets) * (360 // num_hue_buckets)
 
-        # 3. Use HSL to guarantee readability:
-        # Background: 85% saturation, 92% lightness (soft pastel)
-        # Text: 85% saturation, 25% lightness (dark, high contrast)
-        bg_color = f"hsl({hue}, 85%, 92%)"
-        text_color = f"hsl({hue}, 85%, 25%)"
+        # 3. Add minor variations to saturation to separate collisions
+        # (between 70% and 95% saturation)
+        sat = 70 + (hash_int % 26)
+
+        # 4. Use HSL to guarantee readability
+        # Background: soft pastel (lightness between 85% and 92%)
+        bg_lightness = 85 + (hash_int % 8)
+        # Text: dark high-contrast (lightness between 20% and 30%)
+        text_lightness = 20 + (hash_int % 11)
+
+        bg_color = f"hsl({hue}, {sat}%, {bg_lightness}%)"
+        text_color = f"hsl({hue}, {sat}%, {text_lightness}%)"
 
         return bg_color, text_color
 
