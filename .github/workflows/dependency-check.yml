@@ -24,7 +24,7 @@ jobs:
 
       - name: Compile pyproject.toml
         # This generates a temporary requirements.txt based on the PR's pyproject.toml
-        run: pip-compile pyproject.toml --output-file requirements.txt
+        run: pip-compile --no-header pyproject.toml --output-file requirements.txt
 
       - name: Check for differences
         # If the newly generated file differs from the committed one, the CI fails
